@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Map for Synology Moments</title>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<meta property="og:image" content="route.png" />
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.3.4/leaflet.css" />
+	<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.css" />
+	<link rel="stylesheet" href="css/Leaflet.Photo.css" />
+	<link rel="stylesheet" href="css/map.css" />
+</head>
+<body>
+	<div id="map"></div>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.3.4/leaflet.js"></script>
+	<script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js"></script>
+	<script src="js/Leaflet.Photo.js"></script>
+	<script>
+
+		var osm = L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'),
+			imagery = L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}');
+		var map = L.map('map',{
+			layers: [osm]
+		});
+		var baseLayers = {
+			"OSM": osm,
+			"Imagery": imagery
+		};
+		L.control.layers(baseLayers).addTo(map);
+		//http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png
+		//http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}
+		//http://map.geoq.cn/ArcGIS/rest/services/ChinaOnlineCommunity/MapServer/tile/{z}/{y}/{x}
+		var photoLayer = L.photo.cluster().on('click', function (evt) {
+			var photo = evt.layer.photo,
+				template = '<img src="{url}"/></a><p>{time}</p>';
+
+			if (photo.video && (!!document.createElement('video').canPlayType('video/mp4; codecs=avc1.42E01E,mp4a.40.2'))) {
+				template = '<video autoplay controls poster="{url}"><source src="{video}" type="video/mp4"/></video>';
+			}; 
+
+			evt.layer.bindPopup(L.Util.template(template, photo), {
+				className: 'leaflet-popup-photo',
+				minWidth: 300
+			}).openPopup();
+		});
+		baseUrl="http://222.209.84.62:5666/Moments/Mobile/itachi的%20iPhone/";  //%20表示空格，与\ 等效，不能用&nbsp;   如果有'，'前要加\\
+		data={"rows":[]};
+		
+		function csvToJSON(csv){
+			var lines=csv.split("\n");
+			var result = [];
+			var headers=lines[0].split(",");
+			for(var i=0;i<lines.length-1;i++){
+				var obj = {};
+				var currentline=lines[i].split(",");
+				obj["lat"]=currentline[3];
+				obj["lng"]=currentline[2];
+				obj["thumbnail"]=baseUrl+currentline[0].split("/")[0]+"/@eaDir/"+currentline[0].split("/")[1]+"/SYNOPHOTO_THUMB_SM.jpg";
+				obj["url"]=baseUrl+currentline[0];
+				//console.log(obj["url"]);
+				obj["time"]=currentline[1];
+				result.push(obj);
+			}
+			return result; 
+		}
+		
+		//data = {"rows":[{"lat":30.673,"lng":104.145,"thumbnail":baseUrl+"/2015-06-24/@eaDir/IMG_0090.JPG/SYNOPHOTO_THUMB_SM.jpg","url":baseUrl+"/2015-06-24/IMG_0090.JPG","time":"2015-06-24 13:18:42"},{"lat":23.18,"lng":113.414,"thumbnail":baseUrl+"/2017-10-31/@eaDir/IMG_2797.JPG/SYNOPHOTO_THUMB_SM.jpg","url":baseUrl+"/2017-10-31/IMG_2797.JPG","time":"2017-10-31 16:39:24"}]}
+		
+		function loadXMLDoc(){
+			var xmlhttp;
+			// 1，建立xmlHttpRequest对象
+			if(window.XMLHttpRequest){
+				xmlhttp = new XMLHttpRequest();
+			}
+			else{
+				xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+			}
+			// 2，设置回调函数
+			xmlhttp.onreadystatechange=callback;
+			// 3，使用open方法与服务器建立连接
+			xmlhttp.open("GET","http://222.209.84.62:5666/map/write_exif_to_txt/exif.txt",true);
+			// 4，向服务器端发送数据
+			xmlhttp.send();
+			// 5，在回调函数中针对不同呃响应状态进行处理
+			function callback(){
+				if(xmlhttp.readyState == 4 && xmlhttp.status == 200){
+				//注意： onreadystatechange 事件被触发 4 次（0 - 4）, 分别是： 0-1、1-2、2-3、3-4，对应着 readyState 的每个变化。
+					data["rows"]=csvToJSON(xmlhttp.responseText);
+					//console.log(data);
+					photoLayer.add(data.rows).addTo(map);
+					map.fitBounds(photoLayer.getBounds());
+				}
+			}
+		}
+		
+		loadXMLDoc();
+	</script>
+</body>
+</html>
