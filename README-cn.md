@@ -12,13 +12,9 @@
  
  ## 截图
  
- <p align="center">
- <img src="https://github.com/Hu-Yuan/Map-for-Synology-Moments/blob/main/GithubResources/osm.jpg?raw=true">
- </p>
+ <div align="center"><img src="https://github.com/Hu-Yuan/Map-for-Synology-Moments/blob/main/GithubResources/osm.jpg?raw=true"></div>
 
- <p align="center">
- <img src="https://github.com/Hu-Yuan/Map-for-Synology-Moments/blob/main/GithubResources/imagery.jpg?raw=true">
- </p>
+ <div align="center"><img src="https://github.com/Hu-Yuan/Map-for-Synology-Moments/blob/main/GithubResources/imagery.jpg?raw=true"></div>
 
  ## 体验
  
