@@ -8,6 +8,7 @@
 
 - Find photos taken in a certain place through the map quickly.
 - See where the photo was taken at a glance.
+- Support massive photos to be displayed on the map.
 - Smooth user experience.
  
  ## Screenshot
