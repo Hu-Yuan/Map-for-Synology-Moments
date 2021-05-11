@@ -26,6 +26,7 @@
  
  ## LICENSE
 
-Copyright (c) 2017 Caldis rights reserved.
+Copyright (c) 2017 Itachi rights reserved.
 
 [署名-非商业性使用协议](http://creativecommons.org/licenses/by-nc/3.0/cn/)
+
