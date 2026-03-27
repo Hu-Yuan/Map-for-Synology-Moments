@@ -19,7 +19,7 @@
 
  ## Demo
  
- Map for Synology Moments,[Try it](http://222.209.84.62:5666/map).
+ Map for Synology Moments,[Try it](http://itachi.iok.la:5666/map).
 
  ## More
  
